@@ -1,0 +1,54 @@
+# Doxyfile for motcpp
+
+# Project information
+PROJECT_NAME           = "motcpp"
+PROJECT_NUMBER         = "1.0.0"
+PROJECT_BRIEF          = "Modern C++ Multi-Object Tracking Library"
+PROJECT_LOGO           = images/logo.svg
+
+# Input
+INPUT                  = ../include/motcpp
+FILE_PATTERNS          = *.hpp
+RECURSIVE              = YES
+
+# Output
+OUTPUT_DIRECTORY       = _build
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+
+# HTML
+HTML_THEME             = doxygen-awesome
+HTML_EXTRA_STYLESHEET  = 
+HTML_COLORSTYLE        = LIGHT
+
+# Extraction
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+
+# Preprocessing
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = NO
+
+# Cross-references
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+
+# Warnings
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_NO_PARAMDOC       = YES
+
+# Graphs
+HAVE_DOT               = YES
+DOT_IMAGE_FORMAT       = svg
+INTERACTIVE_SVG        = YES
+CLASS_GRAPH            = YES
+COLLABORATION_GRAPH    = YES
+INCLUDE_GRAPH          = YES
+CALL_GRAPH             = NO
+CALLER_GRAPH           = NO
