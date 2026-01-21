@@ -1,0 +1,60 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.lib
+*.exe
+
+# Generated
+compile_commands.json
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Coverage
+*.gcno
+*.gcda
+*.gcov
+coverage.info
+coverage_report/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large data assets (download from releases)
+assets/MOT17-ablation/
+assets/MOT17-train/
+assets/yolox_x_ablation/
+
+# ONNX models (keep example in scripts/)
+*.onnx
+!scripts/models/*.onnx
+
+# Release assets (uploaded to GitHub Releases)
+release_assets/
+
+# Demo results (generated)
+demo_results/
+
+# Temporary files
+*.tmp
+*.log
