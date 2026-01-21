@@ -1,0 +1,117 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: motcpp-linux-x64
+          - os: macos-latest
+            artifact: motcpp-macos-x64
+          - os: windows-latest
+            artifact: motcpp-windows-x64
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build libeigen3-dev libopencv-dev libyaml-cpp-dev
+
+    - name: Install dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: brew install cmake ninja eigen opencv yaml-cpp
+
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        git clone https://github.com/Microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
+        .\vcpkg\vcpkg install eigen3:x64-windows opencv4:x64-windows yaml-cpp:x64-windows
+
+    - name: Configure (Unix)
+      if: matrix.os != 'windows-latest'
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DMOTCPP_BUILD_TESTS=OFF \
+          -DMOTCPP_BUILD_EXAMPLES=ON \
+          -DMOTCPP_BUILD_TOOLS=ON \
+          -DMOTCPP_ENABLE_ONNX=ON
+
+    - name: Configure (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cmake -B build `
+          -DCMAKE_BUILD_TYPE=Release `
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake `
+          -DMOTCPP_BUILD_TESTS=OFF `
+          -DMOTCPP_BUILD_EXAMPLES=ON `
+          -DMOTCPP_BUILD_TOOLS=ON `
+          -DMOTCPP_ENABLE_ONNX=ON
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Package (Unix)
+      if: matrix.os != 'windows-latest'
+      run: |
+        mkdir -p dist/include dist/lib dist/bin
+        cp -r include/motcpp dist/include/
+        cp build/libmotcpp.a dist/lib/
+        cp build/tools/motcpp_eval dist/bin/
+        cp build/examples/simple_tracking dist/bin/
+        cp LICENSE README.md dist/
+        tar -czvf ${{ matrix.artifact }}.tar.gz -C dist .
+
+    - name: Package (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        mkdir dist\include dist\lib dist\bin
+        xcopy /E /I include\motcpp dist\include\motcpp
+        copy build\Release\motcpp.lib dist\lib\
+        copy build\tools\Release\motcpp_eval.exe dist\bin\
+        copy LICENSE dist\
+        copy README.md dist\
+        Compress-Archive -Path dist\* -DestinationPath ${{ matrix.artifact }}.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact }}
+        path: ${{ matrix.artifact }}.*
+
+  create-release:
+    name: Create Release
+    needs: build-release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        files: |
+          motcpp-linux-x64/*.tar.gz
+          motcpp-macos-x64/*.tar.gz
+          motcpp-windows-x64/*.zip

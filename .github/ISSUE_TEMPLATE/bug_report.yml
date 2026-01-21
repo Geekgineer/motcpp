@@ -1,0 +1,95 @@
+name: Bug Report
+description: Report a bug in motcpp
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear description of what the bug is.
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Create tracker with...
+        2. Call update with...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Sample
+      description: If applicable, add a minimal code sample to reproduce.
+      render: cpp
+
+  - type: dropdown
+    id: tracker
+    attributes:
+      label: Tracker
+      description: Which tracker(s) are affected?
+      multiple: true
+      options:
+        - SORT
+        - ByteTrack
+        - OC-SORT
+        - DeepOC-SORT
+        - StrongSORT
+        - BoT-SORT
+        - BoostTrack
+        - HybridSORT
+        - UCMCTrack
+        - All/Unknown
+
+  - type: input
+    id: version
+    attributes:
+      label: motcpp Version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Linux (Ubuntu)
+        - Linux (Other)
+        - macOS
+        - Windows
+    validations:
+      required: true
+
+  - type: input
+    id: compiler
+    attributes:
+      label: Compiler & Version
+      placeholder: "GCC 13.2.0"
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem.

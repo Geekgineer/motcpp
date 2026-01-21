@@ -1,0 +1,181 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-linux:
+    name: Build (Linux ${{ matrix.compiler }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+        include:
+          - compiler: gcc
+            cc: gcc-13
+            cxx: g++-13
+          - compiler: clang
+            cc: clang-17
+            cxx: clang++-17
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          cmake \
+          ninja-build \
+          libeigen3-dev \
+          libopencv-dev \
+          libyaml-cpp-dev \
+          ${{ matrix.compiler == 'gcc' && 'g++-13' || 'clang-17' }}
+
+    - name: Configure
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+          -DMOTCPP_BUILD_TESTS=ON \
+          -DMOTCPP_BUILD_EXAMPLES=ON \
+          -DMOTCPP_BUILD_TOOLS=ON \
+          -DMOTCPP_ENABLE_ONNX=ON
+
+    - name: Build
+      run: cmake --build build --config ${{ env.BUILD_TYPE }} -j $(nproc)
+
+    - name: Test
+      working-directory: build
+      run: ctest -C ${{ env.BUILD_TYPE }} --output-on-failure
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: motcpp-linux-${{ matrix.compiler }}
+        path: |
+          build/libmotcpp.a
+          build/tools/motcpp_eval
+
+  build-macos:
+    name: Build (macOS)
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        brew install cmake ninja eigen opencv yaml-cpp
+
+    - name: Configure
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+          -DMOTCPP_BUILD_TESTS=ON \
+          -DMOTCPP_BUILD_EXAMPLES=ON \
+          -DMOTCPP_ENABLE_ONNX=ON
+
+    - name: Build
+      run: cmake --build build --config ${{ env.BUILD_TYPE }} -j $(sysctl -n hw.ncpu)
+
+    - name: Test
+      working-directory: build
+      run: ctest -C ${{ env.BUILD_TYPE }} --output-on-failure
+
+  build-windows:
+    name: Build (Windows)
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/Microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
+        .\vcpkg\vcpkg install eigen3:x64-windows opencv4:x64-windows yaml-cpp:x64-windows
+
+    - name: Configure
+      run: |
+        cmake -B build `
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake `
+          -DMOTCPP_BUILD_TESTS=ON `
+          -DMOTCPP_BUILD_EXAMPLES=ON `
+          -DMOTCPP_ENABLE_ONNX=ON
+
+    - name: Build
+      run: cmake --build build --config ${{ env.BUILD_TYPE }} -j $env:NUMBER_OF_PROCESSORS
+
+    - name: Test
+      working-directory: build
+      run: ctest -C ${{ env.BUILD_TYPE }} --output-on-failure
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install clang-format
+      run: sudo apt-get install -y clang-format-17
+
+    - name: Check formatting
+      run: |
+        find include src tests -name '*.cpp' -o -name '*.hpp' | \
+          xargs clang-format-17 --dry-run --Werror
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          cmake ninja-build g++-13 \
+          libeigen3-dev libopencv-dev libyaml-cpp-dev \
+          lcov
+
+    - name: Configure with coverage
+      env:
+        CC: gcc-13
+        CXX: g++-13
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DMOTCPP_BUILD_TESTS=ON \
+          -DMOTCPP_COVERAGE=ON \
+          -DMOTCPP_ENABLE_ONNX=OFF
+
+    - name: Build
+      run: cmake --build build -j $(nproc)
+
+    - name: Run tests with coverage
+      working-directory: build
+      run: |
+        lcov --directory . --zerocounters
+        ctest --output-on-failure
+        lcov --directory . --capture --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' '*/tests/*' '*/googletest/*' --output-file coverage.info
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: build/coverage.info
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
