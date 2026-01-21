@@ -1,0 +1,21 @@
+# OCSort tracker configuration
+# Default parameters matching Python implementation
+
+det_thresh: 0.2
+max_age: 30
+max_obs: 50
+min_hits: 3
+iou_threshold: 0.3
+per_class: false
+nr_classes: 80
+asso_func: iou
+is_obb: false
+
+# OCSort-specific parameters
+min_conf: 0.1
+delta_t: 3
+inertia: 0.2
+use_byte: false
+Q_xy_scaling: 0.01
+Q_s_scaling: 0.0001
+

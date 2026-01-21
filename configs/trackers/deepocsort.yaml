@@ -1,0 +1,31 @@
+# DeepOCSort tracker configuration
+# Based on Python boxmot implementation
+
+# BaseTracker parameters
+det_thresh: 0.3
+max_age: 30
+max_obs: 50
+min_hits: 3
+iou_threshold: 0.3
+per_class: false
+nr_classes: 80
+asso_func: "iou"
+is_obb: false
+
+# DeepOCSort-specific parameters
+delta_t: 3
+inertia: 0.2
+w_association_emb: 0.5
+alpha_fixed_emb: 0.95
+aw_param: 0.5
+embedding_off: false
+cmc_off: false
+aw_off: false
+Q_xy_scaling: 0.01
+Q_s_scaling: 0.0001
+
+# ReID model parameters
+reid_weights: ""  # Path to ONNX ReID model
+use_half: false
+use_gpu: false
+

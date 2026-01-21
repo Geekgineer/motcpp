@@ -1,0 +1,25 @@
+min_conf:
+  type: uniform
+  default: 0.1
+  range: [0.1, 0.3]
+
+track_thresh:
+  type: uniform
+  default: 0.6
+  range: [0.4, 0.6]
+
+track_buffer:
+  type: randint
+  default: 30
+  range: [10, 61, 10]
+
+match_thresh:
+  type: uniform
+  default: 0.9
+  range: [0.7, 0.9]
+
+frame_rate:
+  type: choice
+  default: 30
+  choices: [30]
+
