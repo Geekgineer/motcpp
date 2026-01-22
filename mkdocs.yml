@@ -99,7 +99,7 @@ nav:
   - Home: index.md
   - Getting Started:
     - Installation: guides/getting-started.md
-    - Quick Start: guides/getting-started.md#first-tracker
+    - Quick Start: guides/getting-started.md
   - Guides:
     - Choosing a Tracker: guides/trackers.md
     - Architecture: guides/architecture.md
