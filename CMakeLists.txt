@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0
 # Copyright (c) 2026 motcpp contributors
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 
 # Extract version from version.hpp
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/include/motcpp/version.hpp" VERSION_FILE)
@@ -166,14 +166,21 @@ target_include_directories(motcpp
         $<INSTALL_INTERFACE:include>
 )
 
+# Link dependencies
+# Use PRIVATE for dependencies that might have vcpkg paths to avoid
+# INTERFACE_INCLUDE_DIRECTORIES issues on Windows
 target_link_libraries(motcpp
     PUBLIC
-        ${OpenCV_LIBS}
         Eigen3::Eigen
-        yaml-cpp
+    PRIVATE
+        ${OpenCV_LIBS}
+        yaml-cpp::yaml-cpp
 )
 
-target_include_directories(motcpp PUBLIC ${OpenCV_INCLUDE_DIRS})
+# OpenCV includes (handled by target_link_libraries, but ensure PRIVATE)
+if(OpenCV_INCLUDE_DIRS)
+    target_include_directories(motcpp PRIVATE ${OpenCV_INCLUDE_DIRS})
+endif()
 
 # ONNX Runtime (optional)
 if(MOTCPP_ENABLE_ONNX AND ONNXRUNTIME_FOUND)

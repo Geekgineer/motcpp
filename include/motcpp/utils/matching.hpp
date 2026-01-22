@@ -111,7 +111,7 @@ Eigen::MatrixXf fuse_score(const Eigen::MatrixXf& iou_cost_matrix,
  * Return linear assignment result as tuple for convenient unpacking
  */
 inline std::tuple<std::vector<std::pair<int, int>>, std::vector<int>, std::vector<int>>
-linear_assignment(const Eigen::MatrixXf& cost_matrix, float thresh, bool return_tuple) {
+linear_assignment(const Eigen::MatrixXf& cost_matrix, float thresh, bool /* return_tuple */) {
     auto result = linear_assignment(cost_matrix, thresh);
     
     std::vector<std::pair<int, int>> matches;

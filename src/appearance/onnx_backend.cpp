@@ -268,7 +268,7 @@ ONNXBackend::ONNXBackend(const std::string& model_path,
 
 ONNXBackend::~ONNXBackend() = default;
 
-Eigen::MatrixXf ONNXBackend::get_features(const Eigen::MatrixXf& xyxys, const cv::Mat& img) {
+Eigen::MatrixXf ONNXBackend::get_features(const Eigen::MatrixXf& /* xyxys */, const cv::Mat& /* img */) {
     throw std::runtime_error("ONNX Runtime not available.");
 }
 

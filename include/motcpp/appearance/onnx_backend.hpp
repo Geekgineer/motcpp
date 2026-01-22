@@ -42,10 +42,12 @@ public:
      * Get input shape required by the model
      */
     std::pair<int, int> get_input_shape() const override {
+#ifdef MOTCPP_HAS_ONNX
         // Convert from model input shape (N, C, H, W) to (H, W)
         if (model_input_shape_.size() >= 4) {
             return {static_cast<int>(model_input_shape_[2]), static_cast<int>(model_input_shape_[3])};
         }
+#endif
         return input_shape_;  // Fallback to base class value
     }
 
@@ -92,7 +94,7 @@ private:
     Eigen::MatrixXf inference_preprocess(const Eigen::MatrixXf& crops);
 #else
     // Dummy implementation when ONNX Runtime is not available
-    Eigen::MatrixXf forward(const Eigen::MatrixXf& crops) {
+    Eigen::MatrixXf forward(const Eigen::MatrixXf& /* crops */) {
         throw std::runtime_error("ONNX Runtime not available. Compile with MOTCPP_HAS_ONNX.");
     }
 #endif

@@ -17,10 +17,10 @@ KalmanFilterXYSR::KalmanFilterXYSR(int dim_x, int dim_z, int max_obs)
     , K(dim_x, dim_z)
     , y(dim_z)
     , S(dim_z, dim_z)
-    , I_(dim_x, dim_x)
     , dim_x_(dim_x)
     , dim_z_(dim_z)
     , max_obs_(max_obs)
+    , I_(dim_x, dim_x)
 {
     // Initialize F matrix: constant velocity model
     // [1, 0, 0, 0, 1, 0, 0]  // x = x + vx
