@@ -89,7 +89,7 @@ cmake -B build \
     -DMOTCPP_ENABLE_ONNX=ON
 ```
 
-## First Tracker {#first-tracker}
+## First Tracker
 
 Here's a minimal example to get you started:
 
