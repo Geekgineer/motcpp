@@ -238,6 +238,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     if(MOTCPP_COVERAGE)
         target_compile_options(motcpp PRIVATE --coverage)
         target_link_options(motcpp PRIVATE --coverage)
+        # Explicitly link gcov library for coverage support
+        target_link_libraries(motcpp PRIVATE gcov)
     endif()
 elseif(MSVC)
     target_compile_options(motcpp PRIVATE /W4 /permissive-)

@@ -258,6 +258,32 @@ motcpp::trackers::BoostTrackTracker tracker(
 
 ---
 
+### HybridSORT {#hybridsort}
+
+**HybridSORT: A Simple but Strong Association for Multi-Object Tracking** — Combines motion and appearance cues with hybrid matching.
+
+```cpp
+#include <motcpp/trackers/hybridsort.hpp>
+
+motcpp::trackers::HybridSort tracker(
+    0.3f,   // det_thresh
+    30,     // max_age
+    50,     // max_obs
+    3,      // min_hits
+    0.3f,   // iou_threshold
+    "hmiou" // asso_func: "iou" or "hmiou"
+);
+```
+
+**Best for:**
+- Balanced accuracy and speed
+- Scenes with moderate occlusion
+- When ReID is available
+
+**Paper:** [arXiv:2303.XXXX](https://arxiv.org/abs/2303.XXXX)
+
+---
+
 ## Choosing a Tracker
 
 ```

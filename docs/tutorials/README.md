@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
 
 ### Complete Example
 
-See [examples/basic_tracking.cpp](../../examples/basic_tracking.cpp).
+See [examples/simple_tracking.cpp](../../examples/simple_tracking.cpp).
 
 ---
 

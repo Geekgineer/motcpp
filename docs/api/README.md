@@ -240,6 +240,67 @@ public:
 
 ---
 
+## Appearance {#appearance}
+
+### ReIDBackend
+
+Base class for Re-identification backends.
+
+```cpp
+namespace motcpp::appearance {
+
+class ReIDBackend {
+public:
+    virtual ~ReIDBackend() = default;
+    
+    virtual Eigen::MatrixXf get_features(
+        const std::vector<cv::Mat>& crops
+    ) = 0;
+    
+    virtual Eigen::MatrixXf get_features(
+        const Eigen::MatrixXf& xyxys,
+        const cv::Mat& img
+    ) = 0;
+    
+    virtual int get_feature_dim() const = 0;
+};
+
+}
+```
+
+### ONNXBackend
+
+ONNX Runtime backend for ReID models.
+
+```cpp
+namespace motcpp::appearance {
+
+class ONNXBackend : public ReIDBackend {
+public:
+    ONNXBackend(
+        const std::string& model_path,
+        const std::string& model_name = "",
+        bool use_half = false,
+        bool use_gpu = false
+    );
+    
+    Eigen::MatrixXf get_features(
+        const std::vector<cv::Mat>& crops
+    ) override;
+    
+    Eigen::MatrixXf get_features(
+        const Eigen::MatrixXf& xyxys,
+        const cv::Mat& img
+    ) override;
+    
+    int get_feature_dim() const override;
+};
+
+}
+```
+
+---
+
 ## Utils
 
 ### IoU Functions

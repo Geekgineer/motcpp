@@ -106,7 +106,7 @@ nav:
     - Overview: tutorials/README.md
   - Examples:
     - Code Examples: examples/README.md
-  - Contributing: ../CONTRIBUTING.md
+  - Contributing: CONTRIBUTING.md
 
 extra:
   social:
