@@ -117,9 +117,9 @@ Eigen::Vector4f BoostKalmanFilter::get_state() const {
 float BoostKalmanFilter::get_confidence(float coef) const {
     int n = 7;
     if (age < n) {
-        return std::pow(coef, n - age);
+        return static_cast<float>(std::pow(coef, n - age));
     }
-    return std::pow(coef, time_since_update - 1);
+    return static_cast<float>(std::pow(coef, time_since_update - 1));
 }
 
 // BoostTrack implementation
@@ -333,8 +333,8 @@ Eigen::MatrixXf BoostTrackTracker::get_mh_dist_matrix(const Eigen::MatrixXf& det
         return Eigen::MatrixXf(0, 0);
     }
     
-    int n_dets = detections.rows();
-    int n_trks = trackers_.size();
+    int n_dets = static_cast<int>(detections.rows());
+    int n_trks = static_cast<int>(trackers_.size());
     Eigen::MatrixXf mh_dist(n_dets, n_trks);
     
         for (int i = 0; i < n_dets; ++i) {

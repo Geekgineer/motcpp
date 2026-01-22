@@ -143,7 +143,7 @@ public:
         const Eigen::MatrixXf& measurements,
         bool only_position = false
     ) {
-        int n = measurements.rows();
+        int n = static_cast<int>(measurements.rows());
         Eigen::VectorXf distances(n);
         
         // Project mean and covariance

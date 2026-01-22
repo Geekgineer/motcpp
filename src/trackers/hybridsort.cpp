@@ -820,7 +820,7 @@ Eigen::MatrixXf HybridSort::update(
     
     frame_count_++;
     
-    int n_dets_full = dets.rows();
+    int n_dets_full = static_cast<int>(dets.rows());
     if (n_dets_full == 0) {
         // Predict all tracks
         for (auto& trk : active_tracks_) {
@@ -958,7 +958,7 @@ Eigen::MatrixXf HybridSort::update(
     Eigen::MatrixXf k_observations;
     
     if (!active_tracks_.empty()) {
-        int n_trks = active_tracks_.size();
+        int n_trks = static_cast<int>(active_tracks_.size());
         velocities_lt.resize(n_trks, 2);
         velocities_rt.resize(n_trks, 2);
         velocities_lb.resize(n_trks, 2);

@@ -366,8 +366,8 @@ void UCMCTrack::dataAssociation(std::vector<MappedDetection>& dets) {
     std::vector<int> det_remain = det_high;
     std::vector<int> track_remain;
     
-    int num_det = det_high.size();
-    int num_trk = track_idx.size();
+    int num_det = static_cast<int>(det_high.size());
+    int num_trk = static_cast<int>(track_idx.size());
     
     if (num_det > 0 && num_trk > 0) {
         // Build cost matrix using Mahalanobis distance
@@ -411,8 +411,8 @@ void UCMCTrack::dataAssociation(std::vector<MappedDetection>& dets) {
     }
     
     // Second association: low-confidence detections with remaining tracks
-    int num_det_low = det_low.size();
-    int num_trk_remain = track_remain.size();
+    int num_det_low = static_cast<int>(det_low.size());
+    int num_trk_remain = static_cast<int>(track_remain.size());
     
     if (num_det_low > 0 && num_trk_remain > 0) {
         Eigen::MatrixXd cost_matrix(num_trk_remain, num_det_low);
@@ -470,8 +470,8 @@ void UCMCTrack::associateTentative(std::vector<MappedDetection>& dets,
         }
     }
     
-    int num_det = det_remain.size();
-    int num_trk = tentative_idx_.size();
+    int num_det = static_cast<int>(det_remain.size());
+    int num_trk = static_cast<int>(tentative_idx_.size());
     
     if (num_det == 0 || num_trk == 0) {
         return;

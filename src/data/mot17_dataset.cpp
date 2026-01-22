@@ -204,7 +204,7 @@ std::unordered_map<int, Eigen::MatrixXf> MOT17Dataset::load_detections(
                 detections_map[frame_id] = Eigen::MatrixXf(0, 6);
             }
             
-            int rows = detections_map[frame_id].rows();
+            int rows = static_cast<int>(detections_map[frame_id].rows());
             detections_map[frame_id].conservativeResize(rows + 1, 6);
             detections_map[frame_id].row(rows) = det.transpose();
         } else {
@@ -231,7 +231,7 @@ std::unordered_map<int, Eigen::MatrixXf> MOT17Dataset::load_detections(
                 detections_map[frame_id] = Eigen::MatrixXf(0, 6);
             }
             
-            int rows = detections_map[frame_id].rows();
+            int rows = static_cast<int>(detections_map[frame_id].rows());
             detections_map[frame_id].conservativeResize(rows + 1, 6);
             detections_map[frame_id].row(rows) = det.transpose();
         }

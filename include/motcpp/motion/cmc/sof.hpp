@@ -5,7 +5,7 @@
 
 #include <motcpp/motion/cmc/cmc.hpp>
 #include <opencv2/opencv.hpp>
-#include <opencv2/optflow.hpp>
+#include <opencv2/video.hpp>
 #include <vector>
 
 namespace motcpp::motion {

@@ -59,8 +59,15 @@ Track::Track(const Detection& detection, int id, int n_init, int max_age, float 
     bbox = detection.to_xyah();
     
     // Initialize state: Tentative by default (Confirmed only for GITHUB_ACTIONS test mode)
+#ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable: 4996)  // getenv is unsafe
+#endif
     const char* github_actions = std::getenv("GITHUB_ACTIONS");
     const char* github_job = std::getenv("GITHUB_JOB");
+#ifdef _MSC_VER
+    #pragma warning(pop)
+#endif
     if (github_actions && std::string(github_actions) == "true" &&
         (!github_job || std::string(github_job) != "mot-metrics-benchmark")) {
         state_ = TrackState::Confirmed;
@@ -674,7 +681,7 @@ Tracker::match(const std::vector<Detection>& detections) {
         int feat_dim = 0;
         for (int det_idx : detection_indices) {
             if (det_idx >= 0 && det_idx < static_cast<int>(dets.size())) {
-                int dim = dets[det_idx].feat.size();
+                int dim = static_cast<int>(dets[det_idx].feat.size());
                 if (dim > 0) {
                     feat_dim = dim;
                     break;

@@ -360,7 +360,7 @@ Eigen::MatrixXf BotSort::update(
 
 std::tuple<Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf, Eigen::MatrixXf>
 BotSort::split_detections(const Eigen::MatrixXf& dets, const Eigen::MatrixXf& embs) {
-    int n = dets.rows();
+    int n = static_cast<int>(dets.rows());
     
     // Add detection indices
     Eigen::MatrixXf dets_with_ind(n, dets.cols() + 1);

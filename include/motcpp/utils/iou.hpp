@@ -3,6 +3,12 @@
 
 #pragma once
 
+#ifdef _WIN32
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#endif
+
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
@@ -11,6 +17,10 @@
 #include <memory>
 #include <cmath>
 #include <stdexcept>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 namespace motcpp::utils {
 
@@ -21,8 +31,14 @@ inline float iou_obb_pair(const Eigen::VectorXf& bbox1, const Eigen::VectorXf& b
     float cx1 = bbox1(0), cy1 = bbox1(1), w1 = bbox1(2), h1 = bbox1(3), angle1 = bbox1(4);
     float cx2 = bbox2(0), cy2 = bbox2(1), w2 = bbox2(2), h2 = bbox2(3), angle2 = bbox2(4);
     
-    cv::RotatedRect r1(cv::Point2f(cx1, cy1), cv::Size2f(w1, h1), angle1 * 180.0f / M_PI);
-    cv::RotatedRect r2(cv::Point2f(cx2, cy2), cv::Size2f(w2, h2), angle2 * 180.0f / M_PI);
+    float angle1_deg = angle1 * 180.0f / static_cast<float>(M_PI);
+    float angle2_deg = angle2 * 180.0f / static_cast<float>(M_PI);
+    cv::Point2f center1(cx1, cy1);
+    cv::Size2f size1(w1, h1);
+    cv::RotatedRect r1(center1, size1, angle1_deg);
+    cv::Point2f center2(cx2, cy2);
+    cv::Size2f size2(w2, h2);
+    cv::RotatedRect r2(center2, size2, angle2_deg);
     
     std::vector<cv::Point2f> intersect;
     int ret = cv::rotatedRectangleIntersection(r1, r2, intersect);
@@ -45,8 +61,8 @@ inline float iou_obb_pair(const Eigen::VectorXf& bbox1, const Eigen::VectorXf& b
  * Output: (N, M) matrix of IoU values
  */
 inline Eigen::MatrixXf iou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::MatrixXf& bboxes2) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     
     if (N == 0 || M == 0) {
         return Eigen::MatrixXf::Zero(N, M);
@@ -87,8 +103,8 @@ inline Eigen::MatrixXf iou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::Ma
  * Batch IoU computation for oriented bounding boxes
  */
 inline Eigen::MatrixXf iou_batch_obb(const Eigen::MatrixXf& bboxes1, const Eigen::MatrixXf& bboxes2) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     Eigen::MatrixXf iou_matrix = Eigen::MatrixXf::Zero(N, M);
     
     for (int i = 0; i < N; ++i) {
@@ -104,8 +120,8 @@ inline Eigen::MatrixXf iou_batch_obb(const Eigen::MatrixXf& bboxes1, const Eigen
  * Height-modified IoU (hIoU)
  */
 inline Eigen::MatrixXf hmiou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::MatrixXf& bboxes2) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     
     if (N == 0 || M == 0) {
         return Eigen::MatrixXf::Zero(N, M);
@@ -137,8 +153,8 @@ inline Eigen::MatrixXf hmiou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::
  * Generalized IoU (GIoU)
  */
 inline Eigen::MatrixXf giou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::MatrixXf& bboxes2) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     
     if (N == 0 || M == 0) {
         return Eigen::MatrixXf::Zero(N, M);
@@ -179,8 +195,8 @@ inline Eigen::MatrixXf giou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::M
  * Complete IoU (CIoU)
  */
 inline Eigen::MatrixXf ciou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::MatrixXf& bboxes2) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     
     if (N == 0 || M == 0) {
         return Eigen::MatrixXf::Zero(N, M);
@@ -222,7 +238,8 @@ inline Eigen::MatrixXf ciou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::M
     
     Eigen::MatrixXf arctan_diff = (w2.replicate(N, 1).array() / (h2.replicate(N, 1).array() + epsilon)).atan() -
                                   (w1.replicate(1, M).array() / (h1.replicate(1, M).array() + epsilon)).atan();
-    Eigen::MatrixXf v = (4.0f / (M_PI * M_PI)) * arctan_diff.array().square();
+    const float pi_squared = static_cast<float>(M_PI * M_PI);
+    Eigen::MatrixXf v = (4.0f / pi_squared) * arctan_diff.array().square();
     
     // Alpha
     Eigen::MatrixXf S = Eigen::MatrixXf::Ones(N, M) - iou;
@@ -239,8 +256,8 @@ inline Eigen::MatrixXf ciou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::M
  * Distance IoU (DIoU)
  */
 inline Eigen::MatrixXf diou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::MatrixXf& bboxes2) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     
     if (N == 0 || M == 0) {
         return Eigen::MatrixXf::Zero(N, M);
@@ -283,8 +300,8 @@ inline Eigen::MatrixXf diou_batch(const Eigen::MatrixXf& bboxes1, const Eigen::M
 inline Eigen::MatrixXf centroid_batch(const Eigen::MatrixXf& bboxes1, 
                                       const Eigen::MatrixXf& bboxes2,
                                       int frame_width, int frame_height) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     
     if (N == 0 || M == 0) {
         return Eigen::MatrixXf::Zero(N, M);
@@ -305,11 +322,11 @@ inline Eigen::MatrixXf centroid_batch(const Eigen::MatrixXf& bboxes1,
         for (int j = 0; j < M; ++j) {
             float dx = centroids1(i, 0) - centroids2(j, 0);
             float dy = centroids1(i, 1) - centroids2(j, 1);
-            distances(i, j) = std::sqrt(dx * dx + dy * dy);
+            distances(i, j) = static_cast<float>(std::sqrt(dx * dx + dy * dy));
         }
     }
     
-    float norm_factor = std::sqrt(frame_width * frame_width + frame_height * frame_height);
+    float norm_factor = static_cast<float>(std::sqrt(frame_width * frame_width + frame_height * frame_height));
     Eigen::MatrixXf normalized_distances = distances / norm_factor;
     
     return Eigen::MatrixXf::Ones(N, M) - normalized_distances;
@@ -321,8 +338,8 @@ inline Eigen::MatrixXf centroid_batch(const Eigen::MatrixXf& bboxes1,
 inline Eigen::MatrixXf centroid_batch_obb(const Eigen::MatrixXf& bboxes1,
                                           const Eigen::MatrixXf& bboxes2,
                                           int frame_width, int frame_height) {
-    int N = bboxes1.rows();
-    int M = bboxes2.rows();
+    int N = static_cast<int>(bboxes1.rows());
+    int M = static_cast<int>(bboxes2.rows());
     
     if (N == 0 || M == 0) {
         return Eigen::MatrixXf::Zero(N, M);
@@ -338,11 +355,11 @@ inline Eigen::MatrixXf centroid_batch_obb(const Eigen::MatrixXf& bboxes1,
         for (int j = 0; j < M; ++j) {
             float dx = centroids1(i, 0) - centroids2(j, 0);
             float dy = centroids1(i, 1) - centroids2(j, 1);
-            distances(i, j) = std::sqrt(dx * dx + dy * dy);
+            distances(i, j) = static_cast<float>(std::sqrt(dx * dx + dy * dy));
         }
     }
     
-    float norm_factor = std::sqrt(frame_width * frame_width + frame_height * frame_height);
+    float norm_factor = static_cast<float>(std::sqrt(frame_width * frame_width + frame_height * frame_height));
     Eigen::MatrixXf normalized_distances = distances / norm_factor;
     
     return Eigen::MatrixXf::Ones(N, M) - normalized_distances;
