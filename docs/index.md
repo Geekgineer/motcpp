@@ -65,7 +65,7 @@ int main() {
 
 ## License
 
-motcpp is licensed under the [GNU Affero General Public License v3.0](../LICENSE).
+motcpp is licensed under the [GNU Affero General Public License v3.0](LICENSE).
 
 ## Citation
 
