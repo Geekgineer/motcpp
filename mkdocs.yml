@@ -14,15 +14,15 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: deep purple
-      accent: purple
+      primary: indigo
+      accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: deep purple
-      accent: purple
+      primary: indigo
+      accent: indigo
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -36,10 +36,14 @@ theme:
     - navigation.sections
     - navigation.expand
     - navigation.top
+    - navigation.indexes
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
     - content.code.annotate
+    - content.tooltips
+    - toc.integrate
   icon:
     repo: fontawesome/brands/github
   logo: images/logo.svg
@@ -95,7 +99,7 @@ nav:
   - Home: index.md
   - Getting Started:
     - Installation: guides/getting-started.md
-    - Quick Start: guides/getting-started.md
+    - Quick Start: guides/getting-started.md#first-tracker
   - Guides:
     - Choosing a Tracker: guides/trackers.md
     - Architecture: guides/architecture.md

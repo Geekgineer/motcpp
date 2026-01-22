@@ -1,8 +1,10 @@
-# motcpp Documentation
+# motcpp
 
-<p align="center">
-  <strong>Modern C++ Multi-Object Tracking Library</strong>
-</p>
+<div style="text-align: center; margin: 2em 0;">
+  <p style="font-size: 1.2em; color: #666; margin-top: 0.5em;">
+    Modern C++ Multi-Object Tracking Library
+  </p>
+</div>
 
 Welcome to the official documentation for **motcpp** - a high-performance, production-ready C++ library for multi-object tracking in video sequences.
 
@@ -65,7 +67,7 @@ int main() {
 
 ## License
 
-motcpp is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+motcpp is licensed under the [GNU Affero General Public License v3.0](../LICENSE).
 
 ## Citation
 
