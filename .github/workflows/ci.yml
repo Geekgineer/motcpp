@@ -184,7 +184,6 @@ jobs:
 
     - name: Upload coverage to Codecov
       continue-on-error: true
-      if: ${{ secrets.CODECOV_TOKEN != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: build/coverage.info
