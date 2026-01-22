@@ -143,7 +143,7 @@ void CameraMapper::mapToImageSpace(float bbox_cx, float bbox_bottom, float bbox_
 // UCMCSingleTrack Implementation
 // ============================================================================
 
-UCMCSingleTrack::UCMCSingleTrack(const Eigen::Vector2d& y, const Eigen::Matrix2d& R,
+UCMCSingleTrack::UCMCSingleTrack(const Eigen::Vector2d& y, const Eigen::Matrix2d& /* R */,
                                   double wx, double wy, double vmax, float w, float h,
                                   double dt, int track_id)
     : id_(track_id)
@@ -553,7 +553,7 @@ void UCMCTrack::updateStatus() {
     tentative_idx_.clear();
     
     for (size_t i = 0; i < trackers_.size(); ++i) {
-        int det_idx = trackers_[i].detIdx();
+        (void)trackers_[i].detIdx();  // Check detIdx but don't use it
         
         switch (trackers_[i].state()) {
             case UCMCTrackState::Confirmed:

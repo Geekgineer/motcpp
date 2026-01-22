@@ -424,11 +424,11 @@ std::vector<BotSTrack> BotSort::create_detections(
 
 std::tuple<std::vector<std::pair<int, int>>, std::vector<int>, std::vector<int>>
 BotSort::first_association(
-    const Eigen::MatrixXf& dets,
-    const Eigen::MatrixXf& dets_first,
-    std::vector<BotSTrack*>& active_tracks,
-    std::vector<BotSTrack*>& unconfirmed,
-    const cv::Mat& img,
+    const Eigen::MatrixXf& /* dets */,
+    const Eigen::MatrixXf& /* dets_first */,
+    std::vector<BotSTrack*>& /* active_tracks */,
+    std::vector<BotSTrack*>& /* unconfirmed */,
+    const cv::Mat& /* img */,
     std::vector<BotSTrack>& detections,
     std::vector<BotSTrack*>& activated_stracks,
     std::vector<BotSTrack*>& refind_stracks,
@@ -679,7 +679,7 @@ Eigen::MatrixXf BotSort::prepare_output(
     std::vector<BotSTrack*>& activated_stracks,
     std::vector<BotSTrack*>& refind_stracks,
     std::vector<BotSTrack*>& lost_stracks,
-    std::vector<BotSTrack*>& removed_stracks
+    std::vector<BotSTrack*>& /* removed_stracks */
 ) {
     // IMPORTANT: We must process lost_stracks BEFORE modifying active_tracks_
     // because lost_stracks contains pointers to tracks in active_tracks_

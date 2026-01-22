@@ -12,7 +12,7 @@ namespace motcpp::data {
 MOT17Dataset::MOT17Dataset(const std::string& mot_root, 
                          const std::string& det_emb_root,
                          const std::string& model_name,
-                         const std::string& reid_name)
+                         const std::string& /* reid_name */)
     : mot_root_(mot_root)
 {
     if (!det_emb_root.empty() && !model_name.empty()) {

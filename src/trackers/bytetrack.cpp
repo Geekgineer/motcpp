@@ -69,7 +69,7 @@ void STrack::update(const STrack& new_track, int frame_id) {
     frame_id_ = frame_id;
     tracklet_len_ += 1;
     history_observations_.push_back(xyxy());
-    if (history_observations_.size() > max_obs_) {
+    if (static_cast<int>(history_observations_.size()) > max_obs_) {
         history_observations_.pop_front();
     }
     

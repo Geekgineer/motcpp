@@ -129,7 +129,7 @@ HybridKalmanBoxTracker::HybridKalmanBoxTracker(
     const Eigen::VectorXf& bbox,
     const Eigen::VectorXf& temp_feat,
     int delta_t,
-    bool use_custom_kf,
+    bool /* use_custom_kf */,
     int longterm_bank_length,
     float alpha,
     bool adapfs,
@@ -147,10 +147,10 @@ HybridKalmanBoxTracker::HybridKalmanBoxTracker(
     , cls_(cls)
     , det_ind_(det_ind)
     , delta_t_(delta_t)
+    , longterm_bank_length_(longterm_bank_length)
     , track_thresh_(track_thresh)
     , alpha_(alpha)
     , adapfs_(adapfs)
-    , longterm_bank_length_(longterm_bank_length)
     , last_observation_(5)
 {
     velocity_lt = Eigen::Vector2f::Zero();
@@ -561,9 +561,9 @@ Eigen::MatrixXf HybridSort::hmiou_batch(const Eigen::MatrixXf& bboxes1, const Ei
     
     // Add height modulation
     for (int i = 0; i < bboxes1.rows(); ++i) {
-        float h1 = bboxes1(i, 3) - bboxes1(i, 1);
+        (void)(bboxes1(i, 3) - bboxes1(i, 1));  // h1 unused
         for (int j = 0; j < bboxes2.rows(); ++j) {
-            float h2 = bboxes2(j, 3) - bboxes2(j, 1);
+            (void)(bboxes2(j, 3) - bboxes2(j, 1));  // h2 unused
             float yy1 = std::max(bboxes1(i, 1), bboxes2(j, 1));
             float yy2 = std::min(bboxes1(i, 3), bboxes2(j, 3));
             float yy3 = std::min(bboxes1(i, 1), bboxes2(j, 1));
@@ -635,12 +635,12 @@ HybridSort::associate_4_points_with_score(
     const Eigen::MatrixXf& detections,
     const Eigen::MatrixXf& trackers,
     float iou_threshold,
-    const Eigen::MatrixXf& velocities_lt,
-    const Eigen::MatrixXf& velocities_rt,
-    const Eigen::MatrixXf& velocities_lb,
-    const Eigen::MatrixXf& velocities_rb,
-    const Eigen::MatrixXf& k_observations,
-    float inertia,
+    const Eigen::MatrixXf& /* velocities_lt */,
+    const Eigen::MatrixXf& /* velocities_rt */,
+    const Eigen::MatrixXf& /* velocities_lb */,
+    const Eigen::MatrixXf& /* velocities_rb */,
+    const Eigen::MatrixXf& /* k_observations */,
+    float /* inertia */,
     const std::string& asso_func
 ) const {
     // Simplified association - can be enhanced with 4-point matching later
@@ -719,21 +719,21 @@ HybridSort::associate_4_points_with_score_with_reid(
     const Eigen::MatrixXf& detections,
     const Eigen::MatrixXf& trackers,
     float iou_threshold,
-    const Eigen::MatrixXf& velocities_lt,
-    const Eigen::MatrixXf& velocities_rt,
-    const Eigen::MatrixXf& velocities_lb,
-    const Eigen::MatrixXf& velocities_rb,
-    const Eigen::MatrixXf& k_observations,
-    float inertia,
+    const Eigen::MatrixXf& /* velocities_lt */,
+    const Eigen::MatrixXf& /* velocities_rt */,
+    const Eigen::MatrixXf& /* velocities_lb */,
+    const Eigen::MatrixXf& /* velocities_rb */,
+    const Eigen::MatrixXf& /* k_observations */,
+    float /* inertia */,
     const std::string& asso_func,
     const Eigen::MatrixXf& emb_cost,
     const std::pair<float, float>& weights,
-    float thresh,
-    const Eigen::MatrixXf& long_emb_dists,
-    bool with_longterm_reid,
-    float longterm_reid_weight,
+    float /* thresh */,
+    const Eigen::MatrixXf& /* long_emb_dists */,
+    bool /* with_longterm_reid */,
+    float /* longterm_reid_weight */,
     bool with_longterm_reid_correction,
-    float longterm_reid_correction_thresh,
+    float /* longterm_reid_correction_thresh */,
         const std::string& /* dataset */
 ) const {
     // Simplified version with embedding cost

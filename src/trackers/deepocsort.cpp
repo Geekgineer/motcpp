@@ -356,7 +356,7 @@ deepocsort_assoc::AssociateResult deepocsort_assoc::associate(
     const Eigen::MatrixXf& velocities,
     const Eigen::MatrixXf& previous_obs,
     float vdc_weight,
-    int w, int h,
+    int /* w */, int /* h */,
     const Eigen::MatrixXf& emb_cost,
     float w_assoc_emb,
     bool aw_off,

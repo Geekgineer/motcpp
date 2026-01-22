@@ -294,7 +294,7 @@ Eigen::Vector4f BoostTrackTracker::convert_x_to_bbox(const Eigen::VectorXf& x) c
     return Eigen::Vector4f(cx - w/2, cy - h/2, cx + w/2, cy + h/2);
 }
 
-Eigen::MatrixXf BoostTrackTracker::get_iou_matrix(const Eigen::MatrixXf& detections, bool buffered) const {
+Eigen::MatrixXf BoostTrackTracker::get_iou_matrix(const Eigen::MatrixXf& detections, bool /* buffered */) const {
     if (trackers_.empty() || detections.rows() == 0) {
         return Eigen::MatrixXf(0, 0);
     }

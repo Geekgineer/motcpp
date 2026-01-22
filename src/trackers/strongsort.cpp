@@ -194,8 +194,8 @@ void Track::mark_missed() {
 NearestNeighborDistanceMetric::NearestNeighborDistanceMetric(const std::string& metric,
                                                              float matching_threshold,
                                                              int budget)
-    : metric_type_(metric)
-    , matching_threshold(matching_threshold)
+    : matching_threshold(matching_threshold)
+    , metric_type_(metric)
     , budget_(budget)
 {
     if (metric != "euclidean" && metric != "cosine") {
@@ -207,7 +207,7 @@ void NearestNeighborDistanceMetric::partial_fit(const Eigen::MatrixXf& features,
                                                  const std::vector<int>& targets,
                                                  const std::vector<int>& active_targets) {
     // Add features to library
-    for (size_t i = 0; i < features.rows() && i < targets.size(); ++i) {
+    for (size_t i = 0; i < static_cast<size_t>(features.rows()) && i < targets.size(); ++i) {
         int target_id = targets[i];
         Eigen::VectorXf feat = features.row(i);
         samples_[target_id].push_back(feat);

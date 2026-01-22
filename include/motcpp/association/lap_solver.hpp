@@ -112,7 +112,7 @@ static inline int_t _carr_dense(const uint_t n, cost_t *cost[], const uint_t n_f
     return new_free_rows;
 }
 
-static inline uint_t _find_dense(const uint_t n, uint_t lo, cost_t *d, int_t *cols, int_t *y) {
+static inline uint_t _find_dense(const uint_t n, uint_t lo, cost_t *d, int_t *cols, int_t * /* y */) {
     uint_t hi = lo + 1; 
     cost_t mind = d[cols[lo]]; 
     for (uint_t k = hi; k < n; k++) { 

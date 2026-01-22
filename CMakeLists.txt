@@ -179,11 +179,20 @@ target_include_directories(motcpp
 # Eigen3 must be PUBLIC as it's used in public headers
 # Use OpenCV target if available (handles paths correctly), otherwise use legacy variables
 if(TARGET opencv_core)
+    # Check if opencv_video and opencv_calib3d targets exist before linking
+    set(OPENCV_LINK_LIBS opencv_core opencv_imgproc opencv_imgcodecs)
+    
+    if(TARGET opencv_video)
+        list(APPEND OPENCV_LINK_LIBS opencv_video)
+    endif()
+    
+    if(TARGET opencv_calib3d)
+        list(APPEND OPENCV_LINK_LIBS opencv_calib3d)
+    endif()
+    
     target_link_libraries(motcpp
         PUBLIC
-            opencv_core
-            opencv_imgproc
-            opencv_imgcodecs
+            ${OPENCV_LINK_LIBS}
             Eigen3::Eigen
             ${YAML_CPP_TARGET}
     )

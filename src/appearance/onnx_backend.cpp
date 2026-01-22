@@ -16,10 +16,10 @@ ONNXBackend::ONNXBackend(const std::string& model_path,
                          bool use_gpu)
     : ReIDBackend()
     , env_(ORT_LOGGING_LEVEL_WARNING, "motcppReID")
+    , max_batch_size_(32)  // Pre-allocate for up to 32 crops
     , model_path_(model_path)
     , model_name_(model_name.empty() ? model_path : model_name)
     , use_gpu_(use_gpu)
-    , max_batch_size_(32)  // Pre-allocate for up to 32 crops
 {
     // Determine input shape and normalization from model name
     input_shape_ = determine_input_shape(model_name_);
