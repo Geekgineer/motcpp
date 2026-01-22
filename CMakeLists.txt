@@ -64,7 +64,15 @@ if(NOT Eigen3_FOUND)
     find_package(Eigen3 REQUIRED NO_MODULE)
 endif()
 
+# yaml-cpp - try new target first, fallback to old
 find_package(yaml-cpp REQUIRED)
+if(TARGET yaml-cpp::yaml-cpp)
+    set(YAML_CPP_TARGET yaml-cpp::yaml-cpp)
+elseif(TARGET yaml-cpp)
+    set(YAML_CPP_TARGET yaml-cpp)
+else()
+    message(FATAL_ERROR "yaml-cpp target not found")
+endif()
 
 # Optional: ONNX Runtime for ReID models
 if(MOTCPP_ENABLE_ONNX)
@@ -167,19 +175,25 @@ target_include_directories(motcpp
 )
 
 # Link dependencies
-# Use PRIVATE for dependencies that might have vcpkg paths to avoid
-# INTERFACE_INCLUDE_DIRECTORIES issues on Windows
-target_link_libraries(motcpp
-    PUBLIC
-        Eigen3::Eigen
-    PRIVATE
-        ${OpenCV_LIBS}
-        yaml-cpp::yaml-cpp
-)
-
-# OpenCV includes (handled by target_link_libraries, but ensure PRIVATE)
-if(OpenCV_INCLUDE_DIRS)
-    target_include_directories(motcpp PRIVATE ${OpenCV_INCLUDE_DIRS})
+# OpenCV must be PUBLIC as it's used in public headers
+# Eigen3 must be PUBLIC as it's used in public headers
+# Use OpenCV target if available (handles paths correctly), otherwise use legacy variables
+if(TARGET opencv_core)
+    target_link_libraries(motcpp
+        PUBLIC
+            opencv_core
+            opencv_imgproc
+            opencv_imgcodecs
+            Eigen3::Eigen
+            ${YAML_CPP_TARGET}
+    )
+else()
+    target_link_libraries(motcpp
+        PUBLIC
+            ${OpenCV_LIBS}
+            Eigen3::Eigen
+            ${YAML_CPP_TARGET}
+    )
 endif()
 
 # ONNX Runtime (optional)
