@@ -96,23 +96,30 @@ jobs:
     name: Build (Windows)
     runs-on: windows-latest
 
+    env:
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install vcpkg
+    - name: Setup vcpkg
+      uses: lukka/run-vcpkg@v11
+      with:
+        vcpkgGitCommitId: 'c82f74667287d3dc386bce81e44964370c91a289'
+
+    - name: Install dependencies
       run: |
-        git clone https://github.com/Microsoft/vcpkg.git
-        .\vcpkg\bootstrap-vcpkg.bat
-        .\vcpkg\vcpkg install eigen3:x64-windows opencv4:x64-windows yaml-cpp:x64-windows
+        vcpkg install eigen3 opencv4 yaml-cpp --triplet x64-windows
 
     - name: Configure
       run: |
         cmake -B build `
           -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} `
-          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake `
+          -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake `
+          -DVCPKG_TARGET_TRIPLET=x64-windows `
           -DMOTCPP_BUILD_TESTS=ON `
           -DMOTCPP_BUILD_EXAMPLES=ON `
-          -DMOTCPP_ENABLE_ONNX=ON
+          -DMOTCPP_ENABLE_ONNX=OFF
 
     - name: Build
       run: cmake --build build --config ${{ env.BUILD_TYPE }} -j $env:NUMBER_OF_PROCESSORS

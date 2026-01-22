@@ -57,7 +57,13 @@ message(STATUS "")
 # Dependencies
 # ============================================================================
 find_package(OpenCV REQUIRED)
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+
+# Eigen3 - accept version 3.3+ or 5.x (Eigen changed versioning scheme)
+find_package(Eigen3 CONFIG REQUIRED)
+if(NOT Eigen3_FOUND)
+    find_package(Eigen3 REQUIRED NO_MODULE)
+endif()
+
 find_package(yaml-cpp REQUIRED)
 
 # Optional: ONNX Runtime for ReID models
