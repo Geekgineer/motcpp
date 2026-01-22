@@ -179,7 +179,7 @@ jobs:
         lcov --directory . --zerocounters
         ctest --output-on-failure
         lcov --directory . --capture --output-file coverage.info
-        lcov --remove coverage.info '/usr/*' '*/tests/*' '*/googletest/*' --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' '*/tests/*' '*/googletest/*' --output-file coverage.info --ignore-errors unused
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4

@@ -17,7 +17,7 @@ Welcome to the official documentation for **motcpp** - a high-performance, produ
 | [Trackers](guides/trackers.md) | Available tracking algorithms |
 | [Architecture](guides/architecture.md) | System design |
 | [Benchmarking](guides/benchmarking.md) | MOT benchmark evaluation |
-| [Contributing](../../CONTRIBUTING.md) | How to contribute |
+| [Contributing](../CONTRIBUTING.md) | How to contribute |
 
 ## Features
 

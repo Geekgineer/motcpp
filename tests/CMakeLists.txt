@@ -53,7 +53,7 @@ if(MOTCPP_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
             COMMAND ${LCOV} --directory . --zerocounters
             COMMAND $<TARGET_FILE:motcpp_tests>
             COMMAND ${LCOV} --directory . --capture --output-file coverage.info
-            COMMAND ${LCOV} --remove coverage.info '/usr/*' '*/tests/*' '*/googletest/*' --output-file coverage.info
+            COMMAND ${LCOV} --remove coverage.info '/usr/*' '*/tests/*' '*/googletest/*' --output-file coverage.info --ignore-errors unused
             COMMAND ${GENHTML} coverage.info --output-directory coverage_report
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
             COMMENT "Generating coverage report"
